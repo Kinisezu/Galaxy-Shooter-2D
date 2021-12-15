@@ -201,6 +201,7 @@ public class Player : MonoBehaviour
     public void ThrusterSpeedActive()
     {
         _speed = _thrusterSpeed;
+        
     }
 
     public void ThrusterSpeedInactive()

@@ -18,6 +18,9 @@ public class UIManager : MonoBehaviour
 
     private GameManager _gameManager;
 
+    [SerializeField]
+    private Slider _thrusterSlider;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +29,8 @@ public class UIManager : MonoBehaviour
         _restartText.gameObject.SetActive(false);
 
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+
+        _thrusterSlider.value = 50f;
 
         if(_gameManager == null)
         {
@@ -66,5 +71,10 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             _gameOverText.gameObject.SetActive(true);
         }
+    }
+
+    public void ThrusterGaugeAdjust(float _thrusterValue)
+    {
+        _thrusterSlider.value = _thrusterValue;
     }
 }
