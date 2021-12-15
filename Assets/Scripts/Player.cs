@@ -44,6 +44,8 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManager;
 
+    private CameraShake _camera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,6 +53,7 @@ public class Player : MonoBehaviour
 
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _camera = GameObject.Find("Main Camera").GetComponent<CameraShake>();
         _audioSource = GetComponent<AudioSource>();
 
         if (_spawnManager == null)
@@ -61,6 +64,11 @@ public class Player : MonoBehaviour
         if (_uiManager == null)
         {
             Debug.Log("The UI Manager is NULL");
+        }
+
+        if (_camera == null)
+        {
+            Debug.LogError("Camera is NULL");
         }
 
         if(_audioSource == null)
@@ -134,7 +142,9 @@ public class Player : MonoBehaviour
         _lives--;
         _uiManager.UpdateLives(_lives);
 
-        switch(_lives)
+        StartCoroutine(_camera.ShakeCamera(0.5f, 0.3f));
+
+        switch (_lives)
         {
             case 2:
                 _rightEngineDamage.gameObject.SetActive(true);
