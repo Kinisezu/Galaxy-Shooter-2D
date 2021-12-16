@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - EnemyLaser
   - ThrusterSlider
+  - Shield
   layers:
   - Default
   - TransparentFX

@@ -7,10 +7,9 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 5.0f;
-    private float _speedMultiplier = 2;
+    private float _speedMultiplier = 1;
     [SerializeField]
-    private float _thrusterSpeed = 15f;
-    private float _normalSpeed = 5.0f;
+    private float _thrusterMultiplier = 1;
 
     [SerializeField]
     private GameObject _laserPrefab;
@@ -18,6 +17,10 @@ public class Player : MonoBehaviour
     private GameObject _tripleShotPrefab;
     [SerializeField]
     private GameObject _shieldVisualizer;
+    [SerializeField]
+    private SpriteRenderer _shield;
+    [SerializeField]
+    private int _shieldStrength;
     [SerializeField]
     private GameObject _rightEngineDamage;
     [SerializeField]
@@ -55,6 +58,9 @@ public class Player : MonoBehaviour
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _camera = GameObject.Find("Main Camera").GetComponent<CameraShake>();
         _audioSource = GetComponent<AudioSource>();
+        _shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<SpriteRenderer>();
+
+        _shieldVisualizer.SetActive(false);
 
         if (_spawnManager == null)
         {
@@ -72,7 +78,7 @@ public class Player : MonoBehaviour
         }
 
         if(_audioSource == null)
-        {
+        {   
             Debug.LogError("AudioSource on Player is NULL");
         }
         else
@@ -100,7 +106,7 @@ public class Player : MonoBehaviour
 
         Vector3 direction = new Vector3(_horizontalInput, _verticalInput, 0);
 
-        transform.Translate(direction * _speed * Time.deltaTime);
+        transform.Translate(direction * _speed * _thrusterMultiplier * _speedMultiplier * Time.deltaTime);
 
         if (transform.position.x >= 11.5f)
         {
@@ -134,8 +140,24 @@ public class Player : MonoBehaviour
     {
         if (_isShieldActive)
         {
-            _isShieldActive = false;
-            _shieldVisualizer.SetActive(false);
+            switch (_shieldStrength)
+            {
+                case 2:
+                    _shield.color = Color.gray;
+                    _shieldStrength--;
+                    break;
+                case 1:
+                    _shield.color = Color.red;
+                    _shieldStrength--;
+                    break;
+                case 0:
+                    _isShieldActive = false;
+                    _shieldVisualizer.SetActive(false);
+                    break;
+                default:
+                    Debug.Log("Default Case");
+                    break;
+            }
             return;
         }
 
@@ -178,20 +200,22 @@ public class Player : MonoBehaviour
 
     public void SpeedBoostEnabled()
     {
-        _speed *= _speedMultiplier;
+        _speedMultiplier = 2;
         StartCoroutine(SpeedPowerDownRoutine());
     }
 
     IEnumerator SpeedPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
-        _speed /= _speedMultiplier;
+        _speedMultiplier = 1;
     }
 
     public void ShieldsEnabled()
     {
         _isShieldActive = true;
         _shieldVisualizer.SetActive(true);
+        _shieldStrength = 2;
+        _shield.color = Color.white;
     }
     public void AddScore(int points)
     {
@@ -210,12 +234,12 @@ public class Player : MonoBehaviour
 
     public void ThrusterSpeedActive()
     {
-        _speed = _thrusterSpeed;
+        _thrusterMultiplier = 3;
         
     }
 
     public void ThrusterSpeedInactive()
     {
-        _speed = _normalSpeed;
+        _thrusterMultiplier = 1;
     }
 }
