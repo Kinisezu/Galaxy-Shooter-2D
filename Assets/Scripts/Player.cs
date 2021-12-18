@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     private float _canFire = -1.0f;
     [SerializeField]
     private int _currentAmmo;
+    private int _maxAmmo = 15;
     [SerializeField]
     private int _lives = 3;
     [SerializeField]
@@ -211,6 +212,12 @@ public class Player : MonoBehaviour
     public void SubtractAmmo(int shots)
     {
         _currentAmmo -= shots;
+        _uiManager.UpdateAmmo(_currentAmmo);
+    }
+
+    public void AmmoRefill()
+    {
+        _currentAmmo = _maxAmmo;
         _uiManager.UpdateAmmo(_currentAmmo);
     }
 
