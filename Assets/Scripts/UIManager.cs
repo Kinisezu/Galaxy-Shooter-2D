@@ -12,6 +12,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _restartText;
     [SerializeField]
+    private Text _ammoText;
+    [SerializeField]
     private Image _livesImg;
     [SerializeField]
     private Sprite[] _liveSprites;
@@ -25,6 +27,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _scoreText.text = "Score: " + 0;
+        _ammoText.text = "Ammo: " + 15;
         _gameOverText.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
 
@@ -41,6 +44,11 @@ public class UIManager : MonoBehaviour
     public void UpdateScore(int _score)
     {
         _scoreText.text = "Score: " + _score;
+    }
+
+    public void UpdateAmmo (int _currentAmmo)
+    {
+        _ammoText.text = "Ammo: " + _currentAmmo;
     }
 
     public void UpdateLives(int currentLives)

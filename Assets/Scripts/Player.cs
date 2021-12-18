@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
     private float _fireRate = 0.5f;
     private float _canFire = -1.0f;
     [SerializeField]
+    private int _currentAmmo;
+    [SerializeField]
     private int _lives = 3;
     [SerializeField]
     private AudioClip _laserSound;
@@ -59,6 +61,8 @@ public class Player : MonoBehaviour
         _camera = GameObject.Find("Main Camera").GetComponent<CameraShake>();
         _audioSource = GetComponent<AudioSource>();
         _shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<SpriteRenderer>();
+
+        _currentAmmo = 15;
 
         _shieldVisualizer.SetActive(false);
 
@@ -124,13 +128,19 @@ public class Player : MonoBehaviour
     {
         _canFire = _fireRate + Time.time;
 
-        if (_isTripleShotActive)
+        if (_currentAmmo > 0)
         {
-            Instantiate(_tripleShotPrefab, transform.position + new Vector3(0, -0.23f, 0), Quaternion.identity);
-        }
-        else
-        {
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.08f, 0), Quaternion.identity);
+
+            if (_isTripleShotActive)
+            {
+                Instantiate(_tripleShotPrefab, transform.position + new Vector3(0, -0.23f, 0), Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.08f, 0), Quaternion.identity);
+            }
+
+            SubtractAmmo(1);
         }
 
         _audioSource.Play();
@@ -196,6 +206,12 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         _isTripleShotActive = false;
+    }
+
+    public void SubtractAmmo(int shots)
+    {
+        _currentAmmo -= shots;
+        _uiManager.UpdateAmmo(_currentAmmo);
     }
 
     public void SpeedBoostEnabled()
