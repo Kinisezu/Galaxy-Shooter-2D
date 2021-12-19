@@ -233,6 +233,24 @@ public class Player : MonoBehaviour
         _speedMultiplier = 1;
     }
 
+    public void HealthRefill()
+    {
+        _lives++;
+        _uiManager.UpdateLives(_lives);
+        switch (_lives)
+        {
+            case 3:
+                _rightEngineDamage.gameObject.SetActive(false);
+                _leftEngineDamage.gameObject.SetActive(false);
+                break;
+            case 2:
+                _leftEngineDamage.gameObject.SetActive(false);
+                break;
+            default:
+                break;
+        }
+    }
+
     public void ShieldsEnabled()
     {
         _isShieldActive = true;
