@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _tripleShotPrefab;
     [SerializeField]
+    private GameObject _multiShotPrefab;
+    [SerializeField]
     private GameObject _shieldVisualizer;
     [SerializeField]
     private SpriteRenderer _shield;
@@ -39,6 +41,8 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private bool _isTripleShotActive = false;
+    [SerializeField]
+    private bool _isMultiShotActive = false;
     [SerializeField]
     private bool _isShieldActive = false;
 
@@ -136,6 +140,10 @@ public class Player : MonoBehaviour
             {
                 Instantiate(_tripleShotPrefab, transform.position + new Vector3(0, -0.23f, 0), Quaternion.identity);
             }
+            else if (_isMultiShotActive)
+            {
+                Instantiate(_multiShotPrefab, transform.position + new Vector3(0, -0.23f, 0), Quaternion.identity);
+            }
             else
             {
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.08f, 0), Quaternion.identity);
@@ -145,6 +153,7 @@ public class Player : MonoBehaviour
         }
 
         _audioSource.Play();
+
     }
 
     public void Damage()
@@ -200,6 +209,7 @@ public class Player : MonoBehaviour
     public void TripleShotEnabled()
     {
         _isTripleShotActive = true;
+        _isMultiShotActive = false;
         StartCoroutine(TripleShotPowerDownRoutine());
     }
 
@@ -207,6 +217,19 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         _isTripleShotActive = false;
+    }
+
+    public void MultiShotEnabled()
+    {
+        _isMultiShotActive = true;
+        _isTripleShotActive = false;
+        StartCoroutine(MultiShotPowerDownRoutine());
+    }
+
+    IEnumerator MultiShotPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _isMultiShotActive = false;
     }
 
     public void SubtractAmmo(int shots)
@@ -235,19 +258,22 @@ public class Player : MonoBehaviour
 
     public void HealthRefill()
     {
-        _lives++;
-        _uiManager.UpdateLives(_lives);
-        switch (_lives)
+        if (_lives < 3)
         {
-            case 3:
-                _rightEngineDamage.gameObject.SetActive(false);
-                _leftEngineDamage.gameObject.SetActive(false);
-                break;
-            case 2:
-                _leftEngineDamage.gameObject.SetActive(false);
-                break;
-            default:
-                break;
+            _lives++;
+            _uiManager.UpdateLives(_lives);
+            switch (_lives)
+            {
+                case 3:
+                    _rightEngineDamage.gameObject.SetActive(false);
+                    _leftEngineDamage.gameObject.SetActive(false);
+                    break;
+                case 2:
+                    _leftEngineDamage.gameObject.SetActive(false);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

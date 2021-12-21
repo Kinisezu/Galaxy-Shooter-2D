@@ -9,6 +9,8 @@ TagManager:
   - EnemyLaser
   - ThrusterSlider
   - Shield
+  - Left
+  - Right
   layers:
   - Default
   - TransparentFX

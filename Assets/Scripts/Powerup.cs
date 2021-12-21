@@ -54,6 +54,9 @@ public class Powerup : MonoBehaviour
                     case 4:
                         player.HealthRefill();
                         break;
+                    case 5:
+                        player.MultiShotEnabled();
+                        break;
                     default:
                         Debug.Log("Default Case");
                         break;
