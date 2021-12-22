@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 4.0f;
+    private float _startingXPos;
     [SerializeField]
     private GameObject _laserPrefab;
 
@@ -25,6 +26,8 @@ public class Enemy : MonoBehaviour
         _player = GameObject.Find("Player").GetComponent<Player>();
         _audioSource = GetComponent<AudioSource>();
 
+        _startingXPos = transform.position.x;
+
         if(_player == null)
         {
             Debug.LogError("Player is NULL");
@@ -42,6 +45,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         CalculateMovement();
+        ZigZagMovement();
 
         if (Time.time > _canFire && _speed > 0f)
         {
@@ -67,6 +71,22 @@ public class Enemy : MonoBehaviour
             transform.position = new Vector3(Random.Range(-9.0f, 9.0f), 7.5f, 0);
         }
     }
+
+    void ZigZagMovement()
+    {
+        if (transform.position.y < 4)
+        {
+            if (_startingXPos > 0)
+            {
+                transform.Translate(Vector3.left * _speed * Time.deltaTime);
+            }
+            else if (_startingXPos <= 0)
+            {
+                transform.Translate(Vector3.right * _speed * Time.deltaTime);
+            }
+        }
+    }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -100,18 +120,4 @@ public class Enemy : MonoBehaviour
             Destroy(this.gameObject, 2.5f);
         }
     }
-   /* public void FireLaser()
-    {
-        StartCoroutine(ShootLaser());
-    }
-    IEnumerator ShootLaser()
-    {
-        while (true)
-        {
-            _laser.AssignEnemyLaser();
-            yield return new WaitForSeconds(Random.Range(3f, 8f));
-            Instantiate(_laserPrefab, transform.position, Quaternion.identity);
-            _audioSource.PlayOneShot(_enemyLaser);
-        }
-    }*/
 }
