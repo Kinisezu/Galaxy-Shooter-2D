@@ -27,7 +27,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _scoreText.text = "Score: " + 0;
-        _ammoText.text = "Ammo: " + 15;
+        _ammoText.text = "Ammo: " + 15 + " / 15";
         _gameOverText.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
 
@@ -48,7 +48,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateAmmo (int _currentAmmo)
     {
-        _ammoText.text = "Ammo: " + _currentAmmo;
+        _ammoText.text = "Ammo: " + _currentAmmo + " / 15";
     }
 
     public void UpdateLives(int currentLives)
