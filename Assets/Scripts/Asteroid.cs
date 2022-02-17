@@ -9,10 +9,22 @@ public class Asteroid : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab;
     private SpawnManager _spawnManager;
+    private UIManager _uIManager;
+    private int _waveNumber = 1;
 
     private void Start()
     {
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+
+        if(_spawnManager == null)
+        {
+            Debug.LogError("The Spawn Manager is NULL");
+        }
+        if (_uIManager == null)
+        {
+            Debug.LogError("The UI Manager is NULL");
+        }
     }
 
     // Update is called once per frame
@@ -35,6 +47,8 @@ public class Asteroid : MonoBehaviour
             }
 
             Destroy(this.gameObject, 0.25f);
+
+            _uIManager.UpdateWave(_waveNumber);
 
         }
     }

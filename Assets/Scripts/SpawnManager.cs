@@ -10,14 +10,26 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] powerups;
-
+    [SerializeField]
     private bool _stopSpawning = false;
+    [SerializeField]
+    private int _waveNumber;
+    [SerializeField]
+    private int _waitSeconds;
+
+    private WaveManager _waveManager;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        _waveNumber = 1;
 
+        _waveManager = GameObject.Find("Wave_Manager").GetComponent<WaveManager>();
+        if (_waveManager == null)
+        {
+            Debug.LogError("WaveManager is NULL");
+        }
     }
 
     // Update is called once per frame
@@ -25,6 +37,7 @@ public class SpawnManager : MonoBehaviour
     {
         
     }
+
     public void StartSpawning()
     {
         StartCoroutine(SpawnEnemyRoutine());
@@ -35,14 +48,28 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnEnemyRoutine()
     {
+        int count = 0;
+
         yield return new WaitForSeconds(2.0f);
 
-        while (_stopSpawning == false)
+        while (_stopSpawning == false && count < 5)
         {
+            if (_waveNumber < 6)
+            {
+                _waitSeconds = 6;
+                _waitSeconds -= _waveNumber;
+            }
+            else
+            {
+                _waitSeconds = 1;
+            }
             Vector3 posToSpawn = new Vector3(Random.Range(-9.0f, 9.0f), 7.5f, 0);
             GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
-            yield return new WaitForSeconds(5.0f);
+            count++;
+
+
+            yield return new WaitForSeconds(_waitSeconds);
         }
     }
 
@@ -74,5 +101,31 @@ public class SpawnManager : MonoBehaviour
     public void OnPlayerDeath()
     {
         _stopSpawning = true;
+        DestroyAll("Enemy", "Powerup", "EnemyLaser");
     }
+    public void OnNextWave()
+    {
+        _waveNumber = _waveManager.GetWave();
+        _stopSpawning = false;
+    }
+
+    public void DestroyAll(string Enemy, string Powerup, string EnemyLaser)
+    {
+        GameObject[] enemy = GameObject.FindGameObjectsWithTag(Enemy);
+        foreach (GameObject target in enemy)
+        {
+            GameObject.Destroy(target);
+        }
+        GameObject[] powerup = GameObject.FindGameObjectsWithTag(Powerup);
+        foreach (GameObject target in powerup)
+        {
+            GameObject.Destroy(target);
+        }
+        GameObject[] laser = GameObject.FindGameObjectsWithTag(EnemyLaser);
+        foreach (GameObject target in laser)
+        {
+            GameObject.Destroy(target);
+        }
+    }
+
 }

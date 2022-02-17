@@ -51,8 +51,8 @@ public class Player : MonoBehaviour
 
 
     private SpawnManager _spawnManager;
-
     private UIManager _uiManager;
+    private WaveManager _waveManager;
 
     private CameraShake _camera;
 
@@ -63,6 +63,7 @@ public class Player : MonoBehaviour
 
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _waveManager = GameObject.Find("Wave_Manager").GetComponent<WaveManager>();
         _camera = GameObject.Find("Main Camera").GetComponent<CameraShake>();
         _audioSource = GetComponent<AudioSource>();
         _shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<SpriteRenderer>();
@@ -288,6 +289,12 @@ public class Player : MonoBehaviour
     {
         _score += points;
         _uiManager.UpdateScore(_score);
+        _waveManager.AddWave();
+    }
+
+    public int GetScore()
+    {
+        return _score;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

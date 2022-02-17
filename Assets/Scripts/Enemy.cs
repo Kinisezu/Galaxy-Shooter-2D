@@ -12,9 +12,10 @@ public class Enemy : MonoBehaviour
 
     private Player _player;
     private Animator _anim;
+    private WaveManager _waveManager;
 
     [SerializeField]
-    private AudioClip _enemyLaser, _explosion;
+    private AudioClip _explosion;
     private AudioSource _audioSource;
 
     private float _canFire = -1.0f;
@@ -24,6 +25,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
+        _waveManager = GameObject.Find("Wave_Manager").GetComponent<WaveManager>();
+
         _audioSource = GetComponent<AudioSource>();
 
         _startingXPos = transform.position.x;
@@ -36,6 +39,10 @@ public class Enemy : MonoBehaviour
         if (_anim == null)
         {
             Debug.LogError("Animator is NULL");
+        }
+        if(_waveManager == null)
+        {
+            Debug.LogError("Wave Manager is NULL");
         }
 
         //FireLaser();
@@ -100,7 +107,7 @@ public class Enemy : MonoBehaviour
 
             _anim.SetTrigger("OnEnemyDeath");
             _speed = 0;
-            _audioSource.PlayOneShot(_explosion);
+            AudioSource.PlayClipAtPoint(_explosion, this.gameObject.transform.position);
             Destroy(this.gameObject, 2.5f);
         }
 
@@ -114,7 +121,7 @@ public class Enemy : MonoBehaviour
 
             _anim.SetTrigger("OnEnemyDeath");
             _speed = 0;
-            _audioSource.PlayOneShot(_explosion);
+            AudioSource.PlayClipAtPoint(_explosion, this.gameObject.transform.position);
 
             Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 2.5f);
