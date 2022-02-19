@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _fireRate = 0.5f;
     private float _canFire = -1.0f;
+    private bool _isNegativeActive = false;
     [SerializeField]
     private int _currentAmmo;
     private int _maxAmmo = 15;
@@ -134,7 +135,7 @@ public class Player : MonoBehaviour
     {
         _canFire = _fireRate + Time.time;
 
-        if (_currentAmmo > 0)
+        if (_currentAmmo > 0 && _isNegativeActive == false)
         {
 
             if (_isTripleShotActive)
@@ -315,5 +316,17 @@ public class Player : MonoBehaviour
     public void ThrusterSpeedInactive()
     {
         _thrusterMultiplier = 1;
+    }
+
+    public void NegativeEnabled()
+    {
+        StartCoroutine(CannotFire());
+    }
+
+    IEnumerator CannotFire()
+    {
+        _isNegativeActive = true;
+        yield return new WaitForSeconds(5.0f);
+        _isNegativeActive = false;
     }
 }
