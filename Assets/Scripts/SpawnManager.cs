@@ -7,14 +7,16 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyPrefab;
     [SerializeField]
+    private GameObject _rareEnemyPrefab;
+    [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] powerups;
+
     [SerializeField]
     private bool _stopSpawning = false;
-    [SerializeField]
+    
     private int _waveNumber;
-    [SerializeField]
     private int _waitSeconds;
 
     private WaveManager _waveManager;
@@ -26,6 +28,7 @@ public class SpawnManager : MonoBehaviour
         _waveNumber = 1;
 
         _waveManager = GameObject.Find("Wave_Manager").GetComponent<WaveManager>();
+
         if (_waveManager == null)
         {
             Debug.LogError("WaveManager is NULL");
@@ -41,6 +44,7 @@ public class SpawnManager : MonoBehaviour
     public void StartSpawning()
     {
         StartCoroutine(SpawnEnemyRoutine());
+        StartCoroutine(SpawnRareEnemyRoutine());
         StartCoroutine(SpawnPowerupRoutine());
         StartCoroutine(SpawnRarePowerupRoutine());
     }
@@ -67,9 +71,22 @@ public class SpawnManager : MonoBehaviour
             GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
             count++;
-
+          
 
             yield return new WaitForSeconds(_waitSeconds);
+        }
+    }
+    IEnumerator SpawnRareEnemyRoutine()
+    {
+        yield return new WaitForSeconds(2.0f);
+
+        while (_stopSpawning == false)
+        {
+            Vector3 posToSpawn = new Vector3(Random.Range(-9.0f, 9.0f), 7.5f, 0);
+            GameObject newEnemy = Instantiate(_rareEnemyPrefab, posToSpawn, Quaternion.identity);
+            newEnemy.transform.parent = _enemyContainer.transform;
+
+            yield return new WaitForSeconds(6f);
         }
     }
 

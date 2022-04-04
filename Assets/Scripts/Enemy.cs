@@ -16,10 +16,13 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     private AudioClip _explosion;
-    private AudioSource _audioSource;
 
     private float _canFire = -1.0f;
     private float _fireRate = 3.0f;
+
+    [SerializeField]
+    private GameObject _enemyShield;
+    private GameObject _enemy;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +30,11 @@ public class Enemy : MonoBehaviour
         _player = GameObject.Find("Player").GetComponent<Player>();
         _waveManager = GameObject.Find("Wave_Manager").GetComponent<WaveManager>();
 
-        _audioSource = GetComponent<AudioSource>();
+        _enemyShield = _enemy.transform.Find("Enemy_Shield").gameObject;
+        _enemyShield = _enemy.transform.Find("Enemy/Enemy_Shield").gameObject;
+
+        _enemyShield.SetActive(false);
+
 
         _startingXPos = transform.position.x;
 
@@ -44,8 +51,6 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("Wave Manager is NULL");
         }
-
-        //FireLaser();
     }
 
     // Update is called once per frame
@@ -113,18 +118,30 @@ public class Enemy : MonoBehaviour
 
         if(other.tag == "Laser")
         {
-            Destroy(other.gameObject);
-            if(_player != null)
+            if (_enemyShield.activeInHierarchy)
             {
-                _player.AddScore(10);
+                _enemyShield.SetActive(false);
             }
+            else
+            {
+                Destroy(other.gameObject);
+                if (_player != null)
+                {
+                    _player.AddScore(10);
+                }
 
-            _anim.SetTrigger("OnEnemyDeath");
-            _speed = 0;
-            AudioSource.PlayClipAtPoint(_explosion, this.gameObject.transform.position);
+                _anim.SetTrigger("OnEnemyDeath");
+                _speed = 0;
+                AudioSource.PlayClipAtPoint(_explosion, this.gameObject.transform.position);
 
-            Destroy(GetComponent<Collider2D>());
-            Destroy(this.gameObject, 2.5f);
+                Destroy(GetComponent<Collider2D>());
+                Destroy(this.gameObject, 2.5f);
+            }
         }
+    }
+
+    public void EnableEnemyShield()
+    {
+        _enemyShield.SetActive(true);
     }
 }
